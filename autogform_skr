@@ -1,5 +1,6 @@
 
-
+//sumber:https://github.com/jasonjurotich/JJ-GAS
+// diedit untuk keperluan skripsi, membuat tugas google form berbentuk tanya jawab online
 
 function onOpen() {
   var menu = SpreadsheetApp.getUi().createMenu('Forms');
