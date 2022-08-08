@@ -1,6 +1,5 @@
 
-//sumber:https://github.com/jasonjurotich/JJ-GAS
-// diedit untuk keperluan skripsi, membuat tugas google form berbentuk tanya jawab online
+
 
 function onOpen() {
   var menu = SpreadsheetApp.getUi().createMenu('Forms');
@@ -64,6 +63,39 @@ function createForms() {
     body(s);
   }
 } 
+///////////
+//function lewat6menit (){createTrigger_("assign6",10);assign6();}
+
+/*
+function assign6(){
+var sh = SpreadsheetApp.getActiveSpreadsheet();
+var ch = sh.getSheetByName('CACHE');  
+var elapsedTime, startTime = +new Date();
+var t = ch.getRange('A1').getValue() || 0;
+  for (; t<1000; t++){ 
+
+   createForm();
+
+elapsedTime =  +new Date() -  startTime;
+if (elapsedTime>300000){ ch.getRange('A1').setValue(t);return; }  
+    
+};
+  deleteTriggers_();     
+} 
+ 
+ 
+function deleteTriggers_() {
+var triggers = ScriptApp.getProjectTriggers();
+  triggers.forEach(function (trigger) { ScriptApp.deleteTrigger(trigger); Utilities.sleep(1000); });  
+};
+
+
+function createTrigger_(funcName,minutes) {
+deleteTriggers_();
+ScriptApp.newTrigger(funcName).timeBased().everyMinutes(minutes).create();  
+}
+*/
+/////////
 
 
 function body(s) {
@@ -98,6 +130,12 @@ DriveApp.getRootFolder().removeFile(file);
   
 
 for(var x=0;x<nr;x++){ // Beginning of for loop with x
+
+// log proses
+  var s = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  s.getRange('C2').setValue(x+1)
+  s.getRange('D2').setValue(d[x][1])
+  
   var i = d[x][0];
   var cr = 1 + x;
   var ro = s.getRange(cr, 8, 1, 10);
@@ -109,42 +147,55 @@ for(var x=0;x<nr;x++){ // Beginning of for loop with x
         
         if (d[0][11] == "YES"){ var its = f.getItems();
           for (var w = 0; w < its.length; w += 1){ var ite = its[w]; if (ite.getTitle() === "CHOICE"){ var q = ite.asMultipleChoiceItem().duplicate(); }}
-        } else {var soal = f.addPageBreakItem().setTitle("pertanyaan"); soal; var q = f.addMultipleChoiceItem();}
-        q.setTitle(d[x][1]).setHelpText(d[x][2]).setRequired(true);
-        var ulang = "coba lagi"
-        if (d[x][3] !== '') {q.setPoints(d[x][3])}
+        } 
+        else {
+          var soal = f.addPageBreakItem().setTitle("Pertanyaan"); 
+          soal;
 
-        if (d[x][13] !== '') {var fedb1 = f.addPageBreakItem().setTitle("umpan balik").setGoToPage(soal); var item = f.addMultipleChoiceItem(); item.setTitle(d[x][13]).setChoices([item.createChoice('Baik')])};
-        if (d[x][14] !== '') {var fedb2 = f.addPageBreakItem().setTitle("umpan balik").setGoToPage(soal); var item = f.addMultipleChoiceItem(); item.setTitle(d[x][14]).setChoices([item.createChoice('Baik')])};;
-        if (d[x][15] !== '') {var fedb3 = f.addPageBreakItem().setTitle("umpan balik").setGoToPage(soal); var item = f.addMultipleChoiceItem(); item.setTitle(d[x][15]).setChoices([item.createChoice('Baik')])};
-        if (d[x][16] !== '') {var fedb4 = f.addPageBreakItem().setTitle("umpan balik").setGoToPage(soal); var item = f.addMultipleChoiceItem(); item.setTitle(d[x][16]).setChoices([item.createChoice('Baik')])};
-        if (d[x][17] !== '') {var fedb5 = f.addPageBreakItem().setTitle("umpan balik"); var item = f.addMultipleChoiceItem(); item.setTitle(d[x][17]).setChoices([item.createChoice('Baik')])};
+          if (d[x][6] !==''){
+            var img = UrlFetchApp.fetch(d[x][6]); 
+            f.addImageItem().setTitle("Perhatikan gambar").setHelpText(d[x][2]).setImage(img).setAlignment(FormApp.Alignment.CENTER).setWidth(800);
+            }
+          
+          var q = f.addMultipleChoiceItem();}
+          q.setTitle(d[x][1]).setHelpText(d[x][2]).setRequired(true);
+          
+          if (d[x][3] !== '') {q.setPoints(d[x][3])}
+
+          var umpanbalik= 'Umpan Balik';
+          var ulangsoal= 'OK'
+
+          if (d[x][13] !== '') {var fedb1 = f.addPageBreakItem().setTitle(umpanbalik).setGoToPage(soal); var item = f.addMultipleChoiceItem(); item.setTitle(d[x][13]).setRequired(true).setChoices([item.createChoice(ulangsoal)])};
+          if (d[x][14] !== '') {var fedb2 = f.addPageBreakItem().setTitle(umpanbalik).setGoToPage(soal); var item = f.addMultipleChoiceItem(); item.setTitle(d[x][14]).setRequired(true).setChoices([item.createChoice(ulangsoal)])};;
+          if (d[x][15] !== '') {var fedb3 = f.addPageBreakItem().setTitle(umpanbalik).setGoToPage(soal); var item = f.addMultipleChoiceItem(); item.setTitle(d[x][15]).setRequired(true).setChoices([item.createChoice(ulangsoal)])};
+          if (d[x][16] !== '') {var fedb4 = f.addPageBreakItem().setTitle(umpanbalik).setGoToPage(soal); var item = f.addMultipleChoiceItem(); item.setTitle(d[x][16]).setRequired(true).setChoices([item.createChoice(ulangsoal)])};
+          if (d[x][17] !== '') {var fedb5 = f.addPageBreakItem().setTitle(umpanbalik); var item = f.addMultipleChoiceItem(); item.setTitle(d[x][17]).setRequired(true).setChoices([item.createChoice(ulangsoal)])};
 
        
      
         
-        var arr = [];
-        if(d[x][8] !== '') {var qa = q.createChoice(d[x][8], fedb1); arr.push(qa)}
-        if(d[x][9] !== '') {var qa = q.createChoice(d[x][9], fedb2); arr.push(qa)}
-        if(d[x][10] !== '') {var qa = q.createChoice(d[x][10], fedb3); arr.push(qa)}
-        if(d[x][11] !== '') {var qa = q.createChoice(d[x][11], fedb4); arr.push(qa)}
-        if(d[x][12] !== '') {var qa = q.createChoice(d[x][12], fedb5); arr.push(qa)}
+          var arr = [];
+          if(d[x][8] !== '') {var qa = q.createChoice(d[x][8], fedb1); arr.push(qa)}
+          if(d[x][9] !== '') {var qa = q.createChoice(d[x][9], fedb2); arr.push(qa)}
+          if(d[x][10] !== '') {var qa = q.createChoice(d[x][10], fedb3); arr.push(qa)}
+          if(d[x][11] !== '') {var qa = q.createChoice(d[x][11], fedb4); arr.push(qa)}
+          if(d[x][12] !== '') {var qa = q.createChoice(d[x][12], fedb5); arr.push(qa)}
+      
 
-       
-
-        q.setChoices(arr);
+          q.setChoices(arr);
               
 
-        if (d[x][4] !== ""){
-          var correctFeedback = FormApp.createFeedback().setText(d[x][4]).build();
-          q.setFeedbackForCorrect(correctFeedback);
-        }
-        if (d[x][5] !== ""){
-          var incorrectFeedback = FormApp.createFeedback().setText(d[x][5]).build();
-          //.addLink(d[x][6],d[x][7])
-          q.setFeedbackForIncorrect(incorrectFeedback);
+          if (d[x][4] !== ""){
+            var correctFeedback = FormApp.createFeedback().setText(d[x][4]).build();
+            q.setFeedbackForCorrect(correctFeedback);
+          }
+          if (d[x][5] !== ""){
+            var incorrectFeedback = FormApp.createFeedback().setText(d[x][5]).build();
+            //.addLink(d[x][6],d[x][7])
+            q.setFeedbackForIncorrect(incorrectFeedback);
         } 
-    }
+      }
+ 
       else if (i =='CHOICE_O') {
         var arr = [];
         
@@ -231,7 +282,7 @@ for(var x=0;x<nr;x++){ // Beginning of for loop with x
           q.setFeedbackForIncorrect(incorrectFeedback);
         } 
     }
-    
+    /*
     else if (i =='GRID') {
         var arr1 = []; 
         for (q=0; q<op[0].length; q++){ 
@@ -255,7 +306,7 @@ for(var x=0;x<nr;x++){ // Beginning of for loop with x
         }
         f.addCheckboxGridItem().setTitle(d[x][1]).setHelpText(d[x][2]).setRequired(true).setRows(arr1).setColumns(arr2);
     }
-    
+    */
     else if (i =='TEXT') {
         var q = f.addTextItem().setTitle(d[x][1]).setHelpText(d[x][2]).setRequired(true);
         if (d[x][3] !== '') {q.setPoints(d[x][3])}
@@ -288,12 +339,12 @@ for(var x=0;x<nr;x++){ // Beginning of for loop with x
 //textItem.setValidation(textValidation);
 
     else if (i =='PARAGRAPH') {
-        var q = f.addParagraphTextItem().setTitle(d[x][1]).setHelpText(d[x][2]).setRequired(true);
+        var q = f.addParagraphTextItem().setTitle(d[x][1]).setHelpText(d[x][2]).setRequired(false);
         if (d[x][3] !== '') {q.setPoints(d[x][3])}
     }
 
     else if (i =='PARAGRAPH-N') {
-        var q = f.addParagraphTextItem().setTitle(d[x][1]).setHelpText(d[x][2]).setRequired(false);
+        var q = f.addParagraphTextItem().setTitle(d[x][1]).setHelpText(d[x][2]).setRequired(true);
         if (d[x][3] !== '') {q.setPoints(d[x][3])}
     }      
     else if (i =='SECTION') {
